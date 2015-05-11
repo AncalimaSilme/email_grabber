@@ -1,3 +1,5 @@
+# coding: utf-8
+
 Redmine::Plugin.register :email_grabber do
   name 'Email Grabber plugin'
   author 'Author name'
@@ -6,6 +8,8 @@ Redmine::Plugin.register :email_grabber do
   url 'http://example.com/path/to/plugin'
   author_url 'http://example.com/about'
 
-  menu :admin_menu, :email, { :controller => 'emails', :action => 'index' }, :caption => 'Email'
+  menu :admin_menu, :email, { :controller => 'emails', :action => 'index' }, :caption => 'Почта'
+  menu :admin_menu, :conformity_rules, { :controller => 'conformity_rules', :action => 'index' }, :caption => 'Правила сопоставления почтовых ящиков'
+
   settings  :partial => 'settings/email_grabber_settings', :default => {'empty' => true}
 end

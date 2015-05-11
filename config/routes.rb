@@ -1,2 +1,2 @@
-get 'emails', :to => 'emails#index'
-get 'emails/:id', :to => 'emails#show'
+resources :emails, :only => [:index, :show]
+resources :conformity_rules, :only => [:index, :destroy, :create]

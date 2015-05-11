@@ -1,5 +1,5 @@
 class EmailsController < ApplicationController
-  unloadable
+  layout 'admin'
 
   def index
     @emails = Email.all

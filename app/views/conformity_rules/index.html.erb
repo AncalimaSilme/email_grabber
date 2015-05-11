@@ -1,0 +1,42 @@
+<h2>Conformity Rules</h2>
+
+<fieldset>
+  <legend>Создать правило сопоставления доменного имени</legend>
+
+  <%= form_for :conformity_rule  do |form| %>
+      Доменное имя
+      <%= form.select :conformity_type, [%w(Совпадает equel ), %w(Начинается begins ), %w(Содержит contains ), %w(Заканчивается ends )], { :include_blank => false } %>
+      <%= form.text_field :content %>
+      соответствует
+      <%= form.select :project_id, Project.all.map { |p| [p.name, p.id] }, { :include_blank => false } %>
+      <%= form.submit 'Создать правило' %>
+  <% end %>
+
+</fieldset>
+
+<br/>
+
+<table class="list">
+  <thead>
+      <th>ID</th>
+      <th>Тип вхождения</th>
+      <th>Содержимое</th>
+      <th>Название проекта</th>
+      <th></th>
+  </thead>
+  <tbody>
+  <% if !@conformity_rules.blank? %>
+      <% @conformity_rules.each do |rule| %>
+          <tr>
+            <td><%= rule.id %></td>
+            <td><%= rule.conformity_type %></td>
+            <td><%= rule.content %></td>
+            <td><%= rule.project.name if rule.project %></td>
+            <td><%= link_to(l(:button_delete), conformity_rule_path(rule), :method => :delete, :class => 'icon icon-del') %></td>
+          </tr>
+      <% end %>
+  <% else %>
+      <tr><td colspan="5">No rules</td></tr>
+  <% end %>
+  </tbody>
+</table>

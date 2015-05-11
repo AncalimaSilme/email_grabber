@@ -1,20 +1,28 @@
 <h2>Email</h2>
 
-
-<table>
-  <% if @emails.size > 0 %>
-      <% @emails.each do |email| %>
-          <tr>
-            <td><%= email.id %></td>
-            <td><%= email.from %></td>
-            <td><%= email.title %></td>
-            <td><%= email.task_created %></td>
-            <td>
-              <%= link_to 'Yes', { :action => 'show', :id => email.id, :answer => 'yes' }, :method => :get %>
-            </td>
-          </tr>
+<table class="list">
+  <thead>
+      <th>ID</th>
+      <th>От кого?</th>
+      <th>Тема</th>
+      <th>Тело</th>
+      <th></th>
+  </thead>
+  <tbody>
+      <% if @emails.size > 0 %>
+          <% @emails.each do |email| %>
+              <tr>
+                <td><%= email.id %></td>
+                <td><%= email.from %></td>
+                <td><%= email.title %></td>
+                <td><%= email.task_created %></td>
+                <td>
+                  <%= link_to 'Просмотр', { :action => 'show', :id => email.id, :answer => 'yes' }, :method => :get %>
+                </td>
+              </tr>
+          <% end %>
+      <% else %>
+        <tr><td colspan="5">No Emails</td></tr>
       <% end %>
-  <% else %>
-    <tr>No Emails</tr>
-  <% end %>
+  </tbody>
 </table>
