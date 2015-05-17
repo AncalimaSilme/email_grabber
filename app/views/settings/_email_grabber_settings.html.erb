@@ -1,30 +1,40 @@
 <fieldset>
     <legend>Параметры почтового ящика</legend>
     <p>
-      <label for="settings_email_email_address">Электронный адрес</label>
-      <%= text_field_tag 'settings[email_address]', @settings['email_address'] %>
+      <label for="settings_address">Электронный адрес</label>
+      <%= text_field_tag 'settings[username]', @settings['username'] %>
     </p>
 
     <p>
-      <label for="settings_email_password">Пароль</label>
-      <%= password_field_tag 'settings[email_password]', @settings['email_password'] %>
+      <label for="settings_password">Пароль</label>
+      <%= password_field_tag 'settings[password]', @settings['password'] %>
     </p>
 
     <p>
-      <label for="settings_email_protocol">Протокол</label>
-      <%= select_tag('settings[email_protocol]',
-                     options_for_select([['IMAP', 'IMAP'], ['POP3', 'POP3']], @settings['email_protocol'])) %>
+        <label for="settings_port">Сервер</label>
+        <%= text_field_tag 'settings[address]', @settings['address'] %>
     </p>
 
     <p>
-      <label for="settings_email_port">Порт</label>
-      <%= text_field_tag 'settings[email_port]', @settings['email_port'] %>
+      <label for="settings_protocol">Протокол</label>
+      <%= select_tag('settings[protocol]',
+                     options_for_select([['IMAP', 'IMAP'], ['POP3', 'POP3']], @settings['protocol'])) %>
     </p>
 
     <p>
-      <label for="settings_email_ssl">SSL</label>
-      <%= select_tag('settings[email_ssl]',
-                     options_for_select([['Да', true], ['Нет', false]], @settings['email_ssl'])) %>
+      <label for="settings_port">Порт</label>
+      <%= text_field_tag 'settings[port]', @settings['port'] %>
+    </p>
+
+    <p>
+      <label for="settings_enable_ssl">SSL</label>
+      <%= select_tag('settings[enable_ssl]',
+                     options_for_select([['Да', true], ['Нет', false]], @settings['enable_ssl'])) %>
+    </p>
+
+    <p>
+        <label for="settings_delete_after_response">Удалять сообщения с сервера после получения</label>
+        <%= check_box_tag 'settings[delete_after_response]', @settings['delete_after_response'] %>
     </p>
 
 </fieldset>
@@ -39,3 +49,11 @@
                    options_for_select(User.where(:type => 'User').map { |u| [u.firstname + ' ' + u.lastname, u.id] }, @settings['user_id']))  %>
   </p>
 </fieldset>
+
+<!--
+    TODO:
+        - Изменение адреса сервера в соответсвие с выбором протокола
+        - Изменение адреса в соответсвие с username domain name
+        - Галочка для отображения скрытого пароля
+-->
+
