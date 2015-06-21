@@ -42,11 +42,12 @@ namespace :redmine do
             body = mail.body if body.blank?
 
             Email.create!(
-                :message_id     => mail.message_id,
-                :from           => mail.from.first,
-                :subject        => mail.subject,
-                :date           => mail.date.to_s,
-                :body           => body.decoded.force_encoding('utf-8')
+                :message_id           => mail.message_id,
+                :from                 => mail.from.first,
+                :subject              => mail.subject,
+                :date                 => mail.date.to_s,
+                :body                 => body.decoded.force_encoding('utf-8'),
+                :parent_message_id    => mail.in_reply_to
             )
           end
         end

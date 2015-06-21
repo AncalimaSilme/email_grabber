@@ -5,7 +5,7 @@
 
   <%= form_for :conformity_rule  do |form| %>
       Доменное имя
-      <%= form.select :conformity_type, [%w(Совпадает equel ), %w(Начинается begins ), %w(Содержит contains ), %w(Заканчивается ends )], { :include_blank => false } %>
+      <%= form.select :conformity_type, [%w(Совпадает equal ), %w(Начинается begins ), %w(Содержит contains ), %w(Заканчивается ends )], { :include_blank => false } %>
       <%= form.text_field :content %>
       соответствует
       <%= form.select :project_id, Project.all.map { |p| [p.name, p.id] }, { :include_blank => false } %>
