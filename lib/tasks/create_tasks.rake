@@ -30,7 +30,8 @@ namespace :redmine do
           :description    => email.body,
 
           :tracker_id     => settings[:tracker_id],
-          :author_id      => settings[:user_id],
+          :author_id      => settings[:author_id],
+          :assigned_to_id => settings[:assigned_to_id],
 
           :project_id     => project_id
         )

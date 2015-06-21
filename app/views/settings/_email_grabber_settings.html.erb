@@ -44,9 +44,16 @@
 <fieldset>
   <legend>Параметры задачи</legend>
   <p>
-    <label for="settings_email_grabber_user">Пользователь</label>
-    <%= select_tag('settings[user_id]',
-                   options_for_select(User.where(:type => 'User').map { |u| [u.firstname + ' ' + u.lastname, u.id] }, @settings['user_id']))  %>
+    <label for="settings_email_grabber_author">Автор задачи</label>
+    <%= select_tag('settings[author_id]',
+                   options_for_select(User.where(:type => 'User').map { |u| [u.firstname + ' ' + u.lastname, u.id] }, @settings['author_id']))  %>
+  </p>
+
+  <p>
+    <label for="settings_email_grabber_assigned_to_id">Кому назначена</label>
+    <%= select_tag('settings[assigned_to_id]',
+                   options_for_select(User.where(:type => 'User').map { |u| [u.firstname + ' ' + u.lastname, u.id] }, @settings['assigned_to_id']),
+                   { :include_blank => true }) %>
   </p>
 
   <p>

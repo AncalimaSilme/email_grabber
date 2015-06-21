@@ -14,7 +14,7 @@
               <tr>
                 <td><%= email.id %></td>
                 <td><%= email.from %></td>
-                <td><%= email.title %></td>
+                <td><%= email.subject %></td>
                 <td><%= email.task_created %></td>
                 <td>
                   <%= link_to 'Просмотр', { :action => 'show', :id => email.id, :answer => 'yes' }, :method => :get %>
