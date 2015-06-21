@@ -1,33 +1,33 @@
 <fieldset>
-    <legend>Параметры почтового ящика</legend>
+    <legend><%= l('email_settings.legend') %></legend>
     <p>
-      <label for="settings_address">Электронный адрес</label>
+      <label for="settings_username"><%= l('email_settings.username') %></label>
       <%= text_field_tag 'settings[username]', @settings['username'] %>
     </p>
 
     <p>
-      <label for="settings_password">Пароль</label>
+      <label for="settings_password"><%= l('email_settings.password') %></label>
       <%= password_field_tag 'settings[password]', @settings['password'] %>
     </p>
 
     <p>
-        <label for="settings_port">Сервер</label>
+        <label for="settings_address"><%= l('email_settings.address') %></label>
         <%= text_field_tag 'settings[address]', @settings['address'] %>
     </p>
 
     <p>
-      <label for="settings_protocol">Протокол</label>
+      <label for="settings_protocol"><%= l('email_settings.protocol') %></label>
       <%= select_tag('settings[protocol]',
                      options_for_select([['IMAP', 'IMAP'], ['POP3', 'POP3']], @settings['protocol'])) %>
     </p>
 
     <p>
-      <label for="settings_port">Порт</label>
+      <label for="settings_port"><%= l('email_settings.port') %></label>
       <%= text_field_tag 'settings[port]', @settings['port'] %>
     </p>
 
     <p>
-      <label for="settings_enable_ssl">SSL</label>
+      <label for="settings_enable_ssl"><%= l('email_settings.ssl') %></label>
       <%= select_tag('settings[enable_ssl]',
                      options_for_select([['Да', true], ['Нет', false]], @settings['enable_ssl'])) %>
     </p>
@@ -42,22 +42,22 @@
 <br/>
 
 <fieldset>
-  <legend>Параметры задачи</legend>
+  <legend><%= l('issue_settings.legend') %></legend>
   <p>
-    <label for="settings_email_grabber_author">Автор задачи</label>
+    <label for="settings_email_grabber_author"><%= l('issue_settings.author') %></label>
     <%= select_tag('settings[author_id]',
                    options_for_select(User.where(:type => 'User').map { |u| [u.firstname + ' ' + u.lastname, u.id] }, @settings['author_id']))  %>
   </p>
 
   <p>
-    <label for="settings_email_grabber_assigned_to_id">Кому назначена</label>
+    <label for="settings_email_grabber_assigned_to_id"><%= l('issue_settings.assigned_to') %></label>
     <%= select_tag('settings[assigned_to_id]',
                    options_for_select(User.where(:type => 'User').map { |u| [u.firstname + ' ' + u.lastname, u.id] }, @settings['assigned_to_id']),
                    { :include_blank => true }) %>
   </p>
 
   <p>
-    <label for="settings_email_grabber_tracker">Трекер</label>
+    <label for="settings_email_grabber_tracker"><%= l('issue_settings.tracker') %></label>
     <%= select_tag('settings[tracker_id]',
                    options_for_select(Tracker.all.map { |u| [u.name, u.id] }, @settings['tracker_id']))  %>
   </p>

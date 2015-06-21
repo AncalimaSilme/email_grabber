@@ -1,0 +1,53 @@
+ru:
+  create: Создать
+
+  conformity_rules_page_title: Правила сопоставления сообщений электронной почты
+  emails_page_title: Сообщения электронной почты
+
+  conformity_rules:
+    create_rule: Создать правило
+    domain_name: Доменное имя почтового ящика
+    save_rule: Сохранить
+    no_rules: Список правил сопоставления сообщений электронной почты пуст
+
+    id: ID
+    types: Тип соответсвия
+    content: Содежимое
+    project: Проект
+
+  conformity_types:
+    equal: Равно
+    contains: Содержит
+
+  emails:
+    no_emails: Список сообщейний электронной почты пуст
+
+    issue_exist: Задача существует
+    issue_does_not_exist: Задача не существует
+
+    id: ID
+    from: От кого?
+    subject: Тема письма
+    issue: Задача
+
+
+  words:
+    conformity: соответсвует
+
+
+  email_settings:
+    legend: Параметры почтового ящика
+    username: Электронная почта
+    password: Пароль
+    port: Порт
+    address: Сервер
+    protocol: Протокол
+    ssl: SSL
+    delete_after_response: Удалять сообщения с сервера после получения
+
+  issue_settings:
+    legend: Параметры задачи
+    author: Автор
+    assigned_to: Кому назначена
+    tracker: Трекер
+

@@ -9,7 +9,7 @@ class CreateEmails < ActiveRecord::Migration
       t.text    :body,                null: false
       t.string  :date
 
-      t.boolean :task_created,        default: false
+      t.boolean :issue_created,        default: false
       t.string  :parent_message_id
 
       t.timestamps

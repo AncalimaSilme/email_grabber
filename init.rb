@@ -8,8 +8,8 @@ Redmine::Plugin.register :email_grabber do
   url 'http://example.com/path/to/plugin'
   author_url 'http://example.com/about'
 
-  menu :admin_menu, :email, { :controller => 'emails', :action => 'index' }, :caption => 'Почта'
-  menu :admin_menu, :conformity_rules, { :controller => 'conformity_rules', :action => 'index' }, :caption => 'Правила сопоставления почтовых ящиков'
+  menu :admin_menu, :email, { :controller => 'emails', :action => 'index' }, :caption => :emails_page_title
+  menu :admin_menu, :conformity_rules, { :controller => 'conformity_rules', :action => 'index' }, :caption => :conformity_rules_page_title
 
   settings  :partial => 'settings/email_grabber_settings', :default => {'empty' => true}
 end

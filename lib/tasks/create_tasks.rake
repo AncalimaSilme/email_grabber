@@ -11,7 +11,7 @@ namespace :redmine do
       equal_conformity_rules = ConformityRule.where :conformity_type => 'equal'
       contains_conformity_rules = ConformityRule.where :conformity_type => 'contains'
 
-      Email.where('task_created IS FALSE AND parent_message_id IS NULL').order(:id).each do |email|
+      Email.where('issue_created IS FALSE AND parent_message_id IS NULL').order(:id).each do |email|
         domain_name = email.from.split('@').last, project_id = ''
 
         [equal_conformity_rules, contains_conformity_rules].each do |rules_array|
@@ -37,23 +37,23 @@ namespace :redmine do
         )
 
         if issue.save
-          email.update_attributes :task_created => true, :issue_id => issue.id
+          email.update_attributes :issue_created => true, :issue_id => issue.id
         end
       end
 
 
-      Email.where('task_created IS FALSE AND parent_message_id IS NOT NULL').order(:id).each do |email|
+      Email.where('issue_created IS FALSE AND parent_message_id IS NOT NULL').order(:id).each do |email|
         parent_email = get_parent_email email.parent_message_id
 
         unless parent_email.blank?
           issue = parent_email.issue
 
           unless issue.blank?
-            journal = issue.init_journal(User.find_by_id settings[:user_id])
+            journal = issue.init_journal(User.find_by_id settings[:author_id])
             journal.update_attribute :notes, email.body
 
             if issue.save
-              email.update_attribute :task_created, true
+              email.update_attribute :issue_created, true
             end
           end
         end

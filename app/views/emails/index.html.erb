@@ -1,12 +1,11 @@
-<h2>Email</h2>
+<h2><%= l('emails_page_title') %></h2>
 
 <table class="list">
   <thead>
-      <th>ID</th>
-      <th>От кого?</th>
-      <th>Тема</th>
-      <th>Тело</th>
-      <th></th>
+      <th><%= l('emails.id') %></th>
+      <th><%= l('emails.from') %></th>
+      <th><%= l('emails.subject') %></th>
+      <th><%= l('emails.issue') %></th>
   </thead>
   <tbody>
       <% if @emails.size > 0 %>
@@ -14,11 +13,8 @@
               <tr>
                 <td><%= email.id %></td>
                 <td><%= email.from %></td>
-                <td><%= email.subject %></td>
-                <td><%= email.task_created %></td>
-                <td>
-                  <%= link_to 'Просмотр', { :action => 'show', :id => email.id, :answer => 'yes' }, :method => :get %>
-                </td>
+                <td><%= link_to email.subject, email_path(email.id) %></td>
+                <td><%= email.issue_created ? l('emails.issue_exist') : l('emails.issue_does_not_exist') %></td>
               </tr>
           <% end %>
       <% else %>

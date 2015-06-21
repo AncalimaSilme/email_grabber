@@ -1,15 +1,15 @@
-<h2>Conformity Rules</h2>
+<h2><%= l('conformity_rules_page_title') %></h2>
 
 <fieldset>
-  <legend>Создать правило сопоставления доменного имени</legend>
+  <legend><%= l('conformity_rules.create_rule') %></legend>
 
   <%= form_for :conformity_rule  do |form| %>
-      Доменное имя
-      <%= form.select :conformity_type, [%w(Совпадает equal ), %w(Содержит contains )], { :include_blank => false } %>
+      <%= l('conformity_rules.domain_name') %>
+      <%= form.select :conformity_type, ConformityRule.Types.to_a.map { |type| type.reverse }, { :include_blank => false } %>
       <%= form.text_field :content %>
-      соответствует
+      <%= l('words.conformity') %>
       <%= form.select :project_id, Project.all.map { |p| [p.name, p.id] }, { :include_blank => false } %>
-      <%= form.submit 'Создать правило' %>
+      <%= form.submit l('create') %>
   <% end %>
 
 </fieldset>
@@ -18,10 +18,10 @@
 
 <table class="list">
   <thead>
-      <th>ID</th>
-      <th>Тип вхождения</th>
-      <th>Содержимое</th>
-      <th>Название проекта</th>
+      <th><%= l('conformity_rules.id') %></th>
+      <th><%= l('conformity_rules.types') %></th>
+      <th><%= l('conformity_rules.content') %></th>
+      <th><%= l('conformity_rules.project') %></th>
       <th></th>
   </thead>
   <tbody>
@@ -31,12 +31,12 @@
             <td><%= rule.id %></td>
             <td><%= conformity_rule_type_title rule.conformity_type %></td>
             <td><%= rule.content %></td>
-            <td><%= rule.project.name if rule.project %></td>
+            <td><%= link_to(rule.project.name, project_path(rule.project.identifier)) if rule.project %></td>
             <td><%= link_to(l(:button_delete), conformity_rule_path(rule), :method => :delete, :class => 'icon icon-del') %></td>
           </tr>
       <% end %>
   <% else %>
-      <tr><td colspan="5">No rules</td></tr>
+      <tr><td colspan="5"><%= l('conformity_rules.no_rules') %></td></tr>
   <% end %>
   </tbody>
 </table>
