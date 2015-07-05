@@ -1,3 +1,7 @@
-<div class="description">
-  <%= textilizable(@email.body).html_safe %>
-</div>
+<% if ["html", "table", "div"].any? {  |tag|  @email.body.include? tag } %>
+  <iframe width="100%" height="600" srcdoc="<%=  @email.body %>">
+    <p>Your browser does not support iframes.</p>
+  </iframe>
+<% else %>
+  <%= textilizable(@email.body) %>
+<% end %>

@@ -7,7 +7,7 @@ require 'mail'
 namespace :redmine do
   namespace :email_grabber do
     desc 'Fetching messages from server through pop3 or imap'
-    task :get_mails => :environment do
+    task :get_messages => :environment do
 
       plugin_setting = Setting.find_by_name('plugin_email_grabber')
       unless plugin_setting.blank?
@@ -24,21 +24,31 @@ namespace :redmine do
           }
 
           Mail.defaults do
-            retriever_method email_options[:protocol].downcase.to_sym, { :address      => email_options[:address],
-                                                                         :port         => email_options[:port],
-                                                                         :user_name    => email_options[:username],
-                                                                         :password     => email_options[:password],
-                                                                         :enable_ssl   => email_options[:enable_ssl]
-                                                                     }
+            retriever_method email_options[:protocol].downcase.to_sym, {
+              :address => email_options[:address],
+              :port => email_options[:port],
+              :user_name => email_options[:username],
+              :password => email_options[:password],
+              :enable_ssl => email_options[:enable_ssl]
+            }
           end
 
-          mails = Mail.find(:delete_after_find    => email_options[:delete_after_receive],
-                            :count                => 100,
-                            :keys                 => ['NOT', 'SEEN'])
+          mails = Mail.find(
+            :delete_after_find => email_options[:delete_after_receive],
+            :count => 100,
+            :keys  => ['NOT', 'SEEN']
+          )
 
           unless mails.empty?
             mails.each do |msg|
               mail = Mail.new(msg)
+
+
+              puts mail.html_part
+              puts "**************"
+              puts mail.text_part
+              puts "**************"
+              puts mail.body
 
               body = mail.html_part ? mail.html_part : mail.text_part
               body = mail.body if body.blank?
