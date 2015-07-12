@@ -4,7 +4,7 @@ Redmine::Plugin.register :email_grabber do
   name 'Email Grabber plugin'
   author 'Alexander Kazachkin'
   description 'This is a plugin for Redmine. It is help you get email messages and create issues'
-  version '0.0.1'
+  version '0.0.2'
   url 'https://github.com/AncalimaSilme/email_grabber'
 
   menu :admin_menu, :email, { :controller => 'emails', :action => 'index' }, :caption => :emails_page_title
