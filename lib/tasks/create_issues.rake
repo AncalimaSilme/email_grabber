@@ -1,6 +1,7 @@
 # coding: utf-8
 
 require 'nokogiri'
+require 'mail'
 
 namespace :redmine do
   namespace :plugin do
@@ -14,8 +15,13 @@ namespace :redmine do
         equal_conformity_rules = ConformityRule.where :conformity_type => 'equal'
         contains_conformity_rules = ConformityRule.where :conformity_type => 'contains'
 
-        Email.where('issue_created IS FALSE AND parent_message_id IS NULL').order(:id).each do |email|
+        Mail.defaults do
+          delivery_method :smtp, ActionMailer::Base.smtp_settings
+        end
+
+        Email.where(issue_created: false, parent_message_id: nil).order(:id).each do |email|
           domain_name, project_id = email.from.split('@').last,  ''
+          author = User.where(type: "User", mail: email.from)[0]
 
           [equal_conformity_rules, contains_conformity_rules].each do |rules_array|
             rules_array.each do |rule|
@@ -28,31 +34,53 @@ namespace :redmine do
             end
           end
 
+          # if user not found or have no permissions
+          unless author && allowed(author, Project.find_by_id(project_id))
+            author = User.find_by_id settings[:author_id]
+          end
+
           issue = Issue.new(
-            :subject => email.subject,
-            :description => printable_body(email.body),
-
-            :tracker_id => settings[:tracker_id],
-            :author_id => settings[:author_id],
+            :subject        => email.subject,
+            :description    => printable_body(email.body),
+            :tracker_id     => settings[:tracker_id],
+            :author_id      => author ? author.id : settings[:author_id],
             :assigned_to_id => settings[:assigned_to_id],
-
-            :project_id => project_id
+            :project_id     => project_id
           )
 
-          if issue.save
+          if issue.save 
+            Mail.deliver do
+              protocol = Setting.find_by_name(:protocol).try(:value)
+              hostname = Setting.find_by_name(:host_name).try(:value)
+
+              from          ActionMailer::Base.smtp_settings[:user_name]
+              to            email.from
+              in_reply_to   email.message_id
+              subject       "Re: " + email.subject
+              body          "Здравствуйте!\n" + 
+                            "Ваш запрос зарегистрирован в системе учета задач под номером #{issue.id}.\n\n" +
+                            "#{protocol ? protocol : 'http'}://#{hostname ? hostname : 'localhost:3000'}/issues/#{issue.id}"
+                            
+            end          
             email.update_attributes :issue_created => true, :issue_id => issue.id
           end
         end
 
 
-        Email.where('issue_created IS FALSE AND parent_message_id IS NOT NULL').order(:id).each do |email|
+        Email.where(issue_created: false).where('parent_message_id IS NOT NULL').order(:id).each do |email|
           parent_email = get_parent_email email.parent_message_id
+          author = User.where(type: "User", mail: email.from)[0]
 
           unless parent_email.blank?
             issue = parent_email.issue
 
             unless issue.blank?
-              journal = issue.init_journal(User.find_by_id settings[:author_id])
+              # if user not found or have no permissions
+              unless author && allowed(author, issue.project)
+                author = User.find_by_id settings[:author_id]
+              end
+
+              journal = issue.init_journal author
               journal.update_attribute :notes, printable_body(email.body)
 
               if issue.save
@@ -66,6 +94,12 @@ namespace :redmine do
 
     end
   end
+end
+
+# check permissions
+def allowed user, project
+  return true if project.is_public || project.users.include?(user)
+  false
 end
 
 # get parent message for message
@@ -118,3 +152,7 @@ def cleaning_string string
 
   return new_string
 end
+
+# TODO:
+# - предварительная очистка текста сообщения
+# - очистка сообщения после преобразования в текст
