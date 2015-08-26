@@ -105,11 +105,12 @@ end
 # get parent message for message
 def get_parent_email message_id
   email = Email.find_by_message_id message_id
-
-  if email.parent_message_id.blank?
-    return email
-  else
-    get_parent_email email.parent_message_id
+  if email
+    if email.parent_message_id.blank?
+      return email
+    else
+      get_parent_email email.parent_message_id
+    end
   end
 end
 
@@ -118,22 +119,28 @@ def printable_body body
   clean_body = body
 
   if is_html body
-    clean_body = Nokogiri::HTML(body)
-    clean_body.css('script, link, style').each { |node| node.remove }
+    clean_body = cleaning_html Nokogiri::HTML(body)
     clean_body = cleaning_string clean_body.text
   end
 
-  index = clean_body.index(/\d+.\d+.\d+ \d+:\d+, .+:/)
-
-  unless index.blank?
-      clean_body.slice!(index, clean_body.size)
-  end
+  index = clean_body.index(/((\d{2} [а-яА-Яa-zA-z]{3,7}(.| ) \d{4}(| )[годаyear]{1,4}.)|(\d{2}.\d{2}.\d{2,4}))(,|)([ вin]{1,3}|)\d{1,2}:\d{2}, .{5,75}:/)
+  clean_body.slice!(index, clean_body.size) unless index.blank?
 
    return clean_body
 end
 
 def is_html body
   ['<table', '<div', '<span', '<ul', '<body'].any? { |html_tag| body.include? html_tag }
+end
+
+def cleaning_html string
+  # delete gmail reply
+  string.css('.gmail_extra .gmail_quote').remove
+  
+  # delete js and css 
+  string.css('script, link, style').each { |node| node.remove }
+
+  return string
 end
 
 def cleaning_string string
@@ -152,7 +159,3 @@ def cleaning_string string
 
   return new_string
 end
-
-# TODO:
-# - предварительная очистка текста сообщения
-# - очистка сообщения после преобразования в текст

@@ -20,13 +20,12 @@ ru:
     contains: Содержит
 
   emails:
-    no_emails: Список сообщейний электронной почты пуст
-
     issue_exist: Задача существует
     issue_does_not_exist: Задача не существует
 
     id: ID
     from: От кого?
+    date: Дата
     subject: Тема письма
     issue: Задача
 
@@ -51,3 +50,6 @@ ru:
     assigned_to: Кому назначена
     tracker: Трекер
 
+  errors:
+    failure_create_conformity_rule: Не удалось создать правило сопоставления
+    failure_delete_conformity_rule: Не удалось удалить правило сопоставления

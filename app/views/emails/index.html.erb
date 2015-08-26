@@ -5,6 +5,7 @@
       <th><%= l('emails.id') %></th>
       <th><%= l('emails.from') %></th>
       <th><%= l('emails.subject') %></th>
+      <th><%= l('emails.date') %></th>
       <th><%= l('emails.issue') %></th>
   </thead>
   <tbody>
@@ -14,11 +15,16 @@
                 <td><%= email.id %></td>
                 <td><%= email.from %></td>
                 <td><%= link_to email.subject, email_path(email.id) %></td>
-                <td><%= email.issue_created ? l('emails.issue_exist') : l('emails.issue_does_not_exist') %></td>
+                <td><%= email.date.to_datetime.strftime("%d.%m.%Y %H:%M") if email.date %></td>
+                <td>
+                  <%= email.issue_created && email.issue ? link_to_issue(email.issue, { subject: false }) : l('emails.issue_does_not_exist') %>
+                </td>
               </tr>
           <% end %>
       <% else %>
-        <tr><td colspan="5">No Emails</td></tr>
+        <tr><td colspan="5"><%= l(:label_no_data) %></td></tr>
       <% end %>
   </tbody>
 </table>
+
+<!-- TODO: Ссылка на задачу дочернего элемента -->
