@@ -17,7 +17,11 @@
                 <td><%= link_to email.subject, email_path(email.id) %></td>
                 <td><%= email.date.to_datetime.strftime("%d.%m.%Y %H:%M") if email.date %></td>
                 <td>
-                  <%= email.issue_created && email.issue ? link_to_issue(email.issue, { subject: false }) : l('emails.issue_does_not_exist') %>
+                  <% if email.issue_created %>
+                    <%= email.issue ? link_to_issue(email.issue, { subject: false }) : l('emails.issue_does_not_exist') %>
+                  <% else %>
+                    <%= l('emails.issue_does_not_exist') %>
+                  <% end %>
                 </td>
               </tr>
           <% end %>

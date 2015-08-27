@@ -84,7 +84,7 @@ namespace :redmine do
               journal.update_attribute :notes, printable_body(email.body)
 
               if issue.save
-                email.update_attribute :issue_created, true
+                email.update_attributes :issue_created => true, :issue_id => issue.id
               end
             end
           end
