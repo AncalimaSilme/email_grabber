@@ -9,8 +9,8 @@
       <th><%= l('emails.issue') %></th>
   </thead>
   <tbody>
-      <% if @emails.size > 0 %>
-          <% @emails.each do |email| %>
+      <% if @emailss.size > 0 %>
+          <% @emailss.each do |email| %>
               <tr>
                 <td><%= email.id %></td>
                 <td><%= email.from %></td>
@@ -18,7 +18,7 @@
                 <td><%= email.date.to_datetime.strftime("%d.%m.%Y %H:%M") if email.date %></td>
                 <td>
                   <% if email.issue_created %>
-                    <%= email.issue ? link_to_issue(email.issue, { subject: false }) : l('emails.issue_does_not_exist') %>
+                    <%= email.issue ? link_to_issue(email.issue, { subject: false }) : l('emails.issue_exist') %>
                   <% else %>
                     <%= l('emails.issue_does_not_exist') %>
                   <% end %>
@@ -31,4 +31,6 @@
   </tbody>
 </table>
 
-<!-- TODO: Ссылка на задачу дочернего элемента -->
+<% unless @emailss.blank? %>
+  <p class="pagination"><%= pagination_links_full @email_pages, @email_count %></p>
+<% end %>
