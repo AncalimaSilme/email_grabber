@@ -1,5 +1,6 @@
 <fieldset>
     <legend><%= l('email_settings.legend') %></legend>
+    
     <p>
       <label for="settings_username"><%= l('email_settings.username') %></label>
       <%= text_field_tag 'settings[username]', @settings['username'] %>
@@ -36,7 +37,6 @@
         <label for="settings_delete_after_response">Удалять сообщения с сервера после получения</label>
         <%= check_box_tag 'settings[delete_after_response]', @settings['delete_after_response'] %>
     </p>
-
 </fieldset>
 
 <br/>
@@ -61,8 +61,6 @@
     <%= select_tag('settings[tracker_id]',
                    options_for_select(Tracker.all.map { |u| [u.name, u.id] }, @settings['tracker_id']))  %>
   </p>
-
-
 </fieldset>
 
 <!--

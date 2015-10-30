@@ -4,10 +4,9 @@
   <legend><%= l('conformity_rules.create_rule') %></legend>
 
   <%= form_for :conformity_rule  do |form| %>
-      <%= l('conformity_rules.domain_name') %>
-      <%= form.select :conformity_type, ConformityRule.Types.to_a.map { |type| type.reverse }, { :include_blank => false } %>
+      <%= l('words.domain_name_contains') %>
       <%= form.text_field :content %>
-      <%= l('words.conformity') %>
+      <%= l('words.that_conformity_for_project') %>
       <%= form.select :project_id, Project.all.map { |p| [p.name, p.id] }, { :include_blank => false } %>
       <%= form.submit l('create') %>
   <% end %>
@@ -19,7 +18,6 @@
 <table class="list">
   <thead>
       <th><%= l('conformity_rules.id') %></th>
-      <th><%= l('conformity_rules.types') %></th>
       <th><%= l('conformity_rules.content') %></th>
       <th><%= l('conformity_rules.project') %></th>
       <th></th>
@@ -29,7 +27,6 @@
       <% @conformity_rules.each do |rule| %>
           <tr>
             <td><%= rule.id %></td>
-            <td><%= conformity_rule_type_title rule.conformity_type %></td>
             <td><%= rule.content %></td>
             <td><%= link_to(rule.project.name, project_path(rule.project.identifier)) if rule.project %></td>
             <td><%= link_to(l(:button_delete), conformity_rule_path(rule), :method => :delete, :class => 'icon icon-del') %></td>

@@ -12,9 +12,6 @@ namespace :redmine do
 
         settings = Setting.find_by_name('plugin_email_grabber') ? Setting.find_by_name('plugin_email_grabber').value : ''
 
-        equal_conformity_rules = ConformityRule.where :conformity_type => 'equal'
-        contains_conformity_rules = ConformityRule.where :conformity_type => 'contains'
-
         Mail.defaults do
           delivery_method :smtp, ActionMailer::Base.smtp_settings
         end
@@ -23,15 +20,13 @@ namespace :redmine do
           domain_name, project_id = email.from.split('@').last,  ''
           author = User.where(type: "User", mail: email.from)[0]
 
-          [equal_conformity_rules, contains_conformity_rules].each do |rules_array|
-            rules_array.each do |rule|
-              if domain_name.include? rule.content
-                project_id = rule.project_id
-                break
-              end
-
-              break unless project_id.blank?
+          ConformityRule.all.each do |rule|
+            if domain_name.include? rule.content
+              project_id = rule.project_id
+              break
             end
+
+            break unless project_id.blank?
           end
 
           # if user not found or have no permissions

@@ -6,7 +6,7 @@ ru:
 
   conformity_rules:
     create_rule: Создать правило
-    domain_name: Доменное имя почтового ящика
+    domain_name: Доменное имя
     save_rule: Сохранить
     no_rules: Список правил сопоставления сообщений электронной почты пуст
 
@@ -31,7 +31,8 @@ ru:
 
 
   words:
-    conformity: соответсвует
+    domain_name_contains: Доменное имя почтового ящика содержит
+    that_conformity_for_project: что соответсвует проекту
 
 
   email_settings:
