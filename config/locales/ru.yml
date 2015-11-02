@@ -15,10 +15,6 @@ ru:
     content: Содежимое
     project: Проект
 
-  conformity_types:
-    equal: Равно
-    contains: Содержит
-
   emails:
     issue_exist: Задача существует
     issue_does_not_exist: Задача не существует
@@ -50,6 +46,10 @@ ru:
     author: Автор
     assigned_to: Кому назначена
     tracker: Трекер
+
+  confirmation_settings:
+    legend: Параметры подтверждения
+    bcc: Дополнительные адреса
 
   errors:
     failure_create_conformity_rule: Не удалось создать правило сопоставления

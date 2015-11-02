@@ -47,6 +47,7 @@ namespace :redmine do
             Mail.deliver do
               protocol = Setting.find_by_name(:protocol).try(:value)
               hostname = Setting.find_by_name(:host_name).try(:value)
+              conformity_bcc = settings["confirmation_bcc"]
 
               from          ActionMailer::Base.smtp_settings[:user_name]
               to            email.from
@@ -55,6 +56,10 @@ namespace :redmine do
               body          "Здравствуйте!\n" + 
                             "Ваш запрос зарегистрирован в системе учета задач под номером #{issue.id}.\n\n" +
                             "#{protocol ? protocol : 'http'}://#{hostname ? hostname : 'localhost:3000'}/issues/#{issue.id}"
+
+              unless conformity_bcc.blank?
+                bcc conformity_bcc.split(",").map { |address| address.strip }
+              end
                             
             end          
             email.update_attributes :issue_created => true, :issue_id => issue.id

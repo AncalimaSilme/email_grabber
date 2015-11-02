@@ -41,6 +41,16 @@
 
 <br/>
 
+<fieldset>  
+  <legend><%= l('confirmation_settings.legend') %></legend>
+  <p>
+    <label for="settings_confirmation_bcc"><%= l('confirmation_settings.bcc') %></label>
+    <%= text_field_tag 'settings[confirmation_bcc]', @settings['confirmation_bcc'] %>
+  </p>
+</fieldset>
+
+<br/>
+
 <fieldset>
   <legend><%= l('issue_settings.legend') %></legend>
   <p>
