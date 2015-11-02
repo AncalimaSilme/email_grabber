@@ -1,5 +1,24 @@
 <h2><%= l('emails_page_title') %></h2>
 
+<%= form_tag(emails_path, :method => :get) do %>
+  <fieldset><legend><%= l(:label_filter_plural) %></legend>
+
+  <label for='from'><%= l('emails.from') %>:</label>
+  <%= text_field_tag :from, params[:from] %>
+
+  <label for='subject'><%= l('emails.subject') %>:</label>
+  <%= text_field_tag :subject, params[:subject]  %>
+
+  <label for='archive'><%= l('emails.archive') %>:</label>
+  <%= select_tag :archive, options_for_select(Archive.order("month DESC, year DESC").map { |a| [a.name, a.id] }, params[:archive]), include_blank: true  %>
+
+  <%= submit_tag l(:button_apply), :class => "small", :name => nil %>
+  <%= link_to l(:button_clear), emails_path, :class => 'icon icon-reload' %>
+  </fieldset>
+<% end %>
+
+<br>
+
 <table class="list">
   <thead>
       <th><%= l('emails.id') %></th>
