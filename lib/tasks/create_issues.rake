@@ -114,11 +114,12 @@ def printable_body body
   clean_body = body
 
   if is_html body
+    clean_body = cleaning_html clean_body
     clean_body = cleaning_html Nokogiri::HTML(body)
     clean_body = cleaning_string clean_body.text
   end
 
-  index = clean_body.index(/((\d{2} [а-яА-Яa-zA-z]{3,7}(.| ) \d{4}(| )[годаyear]{1,4}.)|(\d{2}.\d{2}.\d{2,4}))(,|)([ вin]{1,3}|)\d{1,2}:\d{2}, .{5,75}:/)
+  index = clean_body.index(/((\d{2} [а-яА-Яa-zA-z]{3,7}(.| ) \d{4}(| )[годаyear]{1,4}.)|(\d{2}.\d{2}.\d{2,4}))(,|)([ вin]{1,3}|)\d{1,2}:\d{2}(,|) .{5,75}:/)
   clean_body.slice!(index, clean_body.size) unless index.blank?
 
    return clean_body
@@ -129,6 +130,13 @@ def is_html body
 end
 
 def cleaning_html string
+  # br to \n
+  string.gsub!("<br>", "\n")
+
+  return string
+end
+
+def cleaning_nokogiri string
   # delete gmail reply
   string.css('.gmail_extra .gmail_quote').remove
   
