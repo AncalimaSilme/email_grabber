@@ -30,6 +30,8 @@ ru:
   words:
     domain_name_contains: Доменное имя почтового ящика содержит
     that_conformity_for_project: что соответсвует проекту
+    in_archive: В архив
+    from_archive: Из архива
 
 
   email_settings:

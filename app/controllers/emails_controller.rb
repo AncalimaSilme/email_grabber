@@ -24,4 +24,27 @@ class EmailsController < ApplicationController
   def show
     @email = Email.find params[:id] 
   end
+
+  def destroy
+    @email = Email.find params[:id]
+    @email.destroy
+    redirect_to emails_path
+  end
+
+  def archive
+    @email = Email.find params[:email_id]
+
+    if @email.archive_id.blank?
+      @date = @email.date.to_date
+      @archive = Archive.find { |a| a.month == @date.month && a.year == @date.year } || Archive.create!(month: @date.month, year: @date.year)
+      @email.update_attribute :archive_id, @archive.id
+    else
+      @email.update_attribute :archive_id, nil
+    end
+
+    redirect_to emails_path
+  end
 end
+
+# TODO:
+# - redirect with params for actions: destroy and archive

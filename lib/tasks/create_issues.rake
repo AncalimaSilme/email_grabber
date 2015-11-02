@@ -16,7 +16,7 @@ namespace :redmine do
           delivery_method :smtp, ActionMailer::Base.smtp_settings
         end
 
-        Email.where(issue_created: false, parent_message_id: nil).order(:id).each do |email|
+        Email.where(issue_created: false, parent_message_id: nil, archive_id: nil).order(:id).each do |email|
           domain_name, project_id = email.from.split('@').last,  ''
           author = User.where(type: "User", mail: email.from)[0]
 
@@ -67,7 +67,7 @@ namespace :redmine do
         end
 
 
-        Email.where(issue_created: false).where('parent_message_id IS NOT NULL').order(:id).each do |email|
+        Email.where(issue_created: false, archive_id: nil).where('parent_message_id IS NOT NULL').order(:id).each do |email|
           parent_email = get_parent_email email.parent_message_id
           author = User.where(type: "User", mail: email.from)[0]
 

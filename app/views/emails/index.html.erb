@@ -26,6 +26,7 @@
       <th><%= l('emails.subject') %></th>
       <th><%= l('emails.date') %></th>
       <th><%= l('emails.issue') %></th>
+      <th></th>
   </thead>
   <tbody>
       <% if @emailss.size > 0 %>
@@ -42,10 +43,14 @@
                     <%= l('emails.issue_does_not_exist') %>
                   <% end %>
                 </td>
+                <td>
+                  <%= link_to "#{ email.archive_id ? l('words.from_archive') : l('words.in_archive') }", email_archive_path(email), method: :post %>
+                  <%= delete_link email_path(email) %>
+                </td>
               </tr>
           <% end %>
       <% else %>
-        <tr><td colspan="5"><%= l(:label_no_data) %></td></tr>
+        <tr><td colspan="6"><%= l(:label_no_data) %></td></tr>
       <% end %>
   </tbody>
 </table>
