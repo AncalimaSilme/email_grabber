@@ -25,44 +25,44 @@ namespace :redmine do
               project_id = rule.project_id
               break
             end
-
-            break unless project_id.blank?
           end
 
-          # if user not found or have no permissions
-          unless author && allowed(author, Project.find_by_id(project_id))
-            author = User.find_by_id settings[:author_id]
-          end
+          project = Project.find_by_id project_id
+          unless project.blank?
+            unless author && allowed(author, project)
+              author = User.find_by_id settings[:author_id]
+            end
 
-          issue = Issue.new(
-            :subject        => email.subject,
-            :description    => printable_body(email.body),
-            :tracker_id     => settings[:tracker_id],
-            :author_id      => author ? author.id : settings[:author_id],
-            :assigned_to_id => settings[:assigned_to_id],
-            :project_id     => project_id
-          )
+            issue = Issue.new(
+              :subject        => email.subject,
+              :description    => printable_body(email.body),
+              :tracker_id     => settings[:tracker_id],
+              :author_id      => author ? author.id : settings[:author_id],
+              :assigned_to_id => settings[:assigned_to_id],
+              :project_id     => project.id
+            )
 
-          if issue.save 
-            Mail.deliver do
-              protocol = Setting.find_by_name(:protocol).try(:value)
-              hostname = Setting.find_by_name(:host_name).try(:value)
-              conformity_bcc = settings["confirmation_bcc"]
+            if issue.save 
+              Mail.deliver do
+                protocol = Setting.find_by_name(:protocol).try(:value)
+                hostname = Setting.find_by_name(:host_name).try(:value)
+                conformity_bcc = settings["confirmation_bcc"]
 
-              from          ActionMailer::Base.smtp_settings[:user_name]
-              to            email.from
-              in_reply_to   email.message_id
-              subject       "Re: " + email.subject
-              body          "Здравствуйте!\n" + 
-                            "Ваш запрос зарегистрирован в системе учета задач под номером #{issue.id}.\n\n" +
-                            "#{protocol ? protocol : 'http'}://#{hostname ? hostname : 'localhost:3000'}/issues/#{issue.id}"
+                from          ActionMailer::Base.smtp_settings[:user_name]
+                to            email.from
+                in_reply_to   email.message_id
+                subject       "Re: " + email.subject
+                body          "Здравствуйте!\n" + 
+                              "Ваш запрос зарегистрирован в системе учета задач под номером #{issue.id}.\n\n" +
+                              "#{protocol ? protocol : 'http'}://#{hostname ? hostname : 'localhost:3000'}/issues/#{issue.id}"
 
-              unless conformity_bcc.blank?
-                bcc conformity_bcc.split(",").map { |address| address.strip }
-              end
-                            
-            end          
-            email.update_attributes :issue_created => true, :issue_id => issue.id
+                unless conformity_bcc.blank?
+                  bcc conformity_bcc.split(",").map { |address| address.strip }
+                end
+                              
+              end          
+              email.update_attributes :issue_created => true, :issue_id => issue.id
+            end
           end
         end
 
@@ -75,7 +75,6 @@ namespace :redmine do
             issue = parent_email.issue
 
             unless issue.blank?
-              # if user not found or have no permissions
               unless author && allowed(author, issue.project)
                 author = User.find_by_id settings[:author_id]
               end
