@@ -43,24 +43,37 @@ namespace :redmine do
             )
 
             if issue.save
-              Mail.deliver do
-                protocol = Setting.find_by_name(:protocol).try(:value)
-                hostname = Setting.find_by_name(:host_name).try(:value)
-                conformity_bcc = settings["confirmation_bcc"]
+              email.attachments.each do |attachment|
+                issue.attachments.create!({
+                  filename: attachment.filename,
+                  disk_directory: attachment.disk_directory,
+                  disk_filename: attachment.disk_filename,
+                  author_id: attachment.author_id,
+                  digest: attachment.digest,
+                  content_type: attachment.content_type,
+                  filesize: attachment.filesize
+                })
+              end if email.attachments.any?
 
-                from          ActionMailer::Base.smtp_settings[:user_name]
-                to            email.from
-                in_reply_to   email.message_id
-                subject       "Re: " + email.subject
-                body          "Здравствуйте!\n" + 
-                              "Ваш запрос зарегистрирован в системе учета задач под номером #{issue.id}.\n\n" +
-                              "#{protocol ? protocol : 'http'}://#{hostname ? hostname : 'localhost:3000'}/issues/#{issue.id}"
+              # Mail.deliver do
+              #   protocol = Setting.find_by_name(:protocol).try(:value)
+              #   hostname = Setting.find_by_name(:host_name).try(:value)
+              #   conformity_bcc = settings["confirmation_bcc"]
 
-                unless conformity_bcc.blank?
-                  bcc conformity_bcc.split(",").map { |address| address.strip }
-                end
+              #   from          ActionMailer::Base.smtp_settings[:user_name]
+              #   to            email.from
+              #   in_reply_to   email.message_id
+              #   subject       "Re: " + email.subject
+              #   body          "Здравствуйте!\n" + 
+              #                 "Ваш запрос зарегистрирован в системе учета задач под номером #{issue.id}.\n\n" +
+              #                 "#{protocol ? protocol : 'http'}://#{hostname ? hostname : 'localhost:3000'}/issues/#{issue.id}"
+
+              #   unless conformity_bcc.blank?
+              #     bcc conformity_bcc.split(",").map { |address| address.strip }
+              #   end
                               
-              end          
+              # end          
+              
               email.update_attributes :issue_created => true, :issue_id => issue.id
             end
           end
@@ -80,7 +93,20 @@ namespace :redmine do
               end
 
               journal = issue.init_journal author
-              journal.update_attribute :notes, printable_body(email.body)
+              journal.notes = printable_body(email.body) unless email.body.blank?
+              journal.save!
+
+              email.attachments.each do |attachment|
+                issue_attachment = issue.attachments.create!({
+                  filename: attachment.filename,
+                  disk_directory: attachment.disk_directory,
+                  disk_filename: attachment.disk_filename,
+                  author_id: attachment.author_id,
+                  digest: attachment.digest,
+                  content_type: attachment.content_type,
+                  filesize: attachment.filesize
+                })
+              end if email.attachments.any?
 
               if issue.save
                 email.update_attributes :issue_created => true, :issue_id => issue.id
