@@ -42,7 +42,7 @@ namespace :redmine do
               :project_id     => project.id
             )
 
-            if issue.save 
+            if issue.save
               Mail.deliver do
                 protocol = Setting.find_by_name(:protocol).try(:value)
                 hostname = Setting.find_by_name(:host_name).try(:value)
@@ -119,7 +119,7 @@ def printable_body body
 
   if is_html body
     clean_body = cleaning_html clean_body
-    clean_body = cleaning_html Nokogiri::HTML(body)
+    clean_body = cleaning_nokogiri Nokogiri::HTML(body)
     clean_body = cleaning_string clean_body.text
   end
 

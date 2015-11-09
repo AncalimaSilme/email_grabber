@@ -5,3 +5,12 @@
 <% else %>
   <%= textilizable(@email.body) %>
 <% end %>
+
+<% if @email.attachments.any? %>
+  <div class="box attachments">
+    <h3><%= l(:label_attachment_plural) %></h3>
+    <% options = { :author => true, :thumbnails => true} %>
+    <%= render :partial => 'attachments/links',
+      :locals => { :attachments => @email.attachments, :options => options, :thumbnails => (options[:thumbnails] && Setting.thumbnails_enabled?)} %>
+  </div>
+<% end %>
