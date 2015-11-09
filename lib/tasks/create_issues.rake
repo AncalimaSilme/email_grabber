@@ -16,7 +16,9 @@ namespace :redmine do
           delivery_method :smtp, ActionMailer::Base.smtp_settings
         end
 
-        Email.where(issue_created: false, parent_message_id: nil, archive_id: nil).order(:id).each do |email|
+        Email.where(parent_message_id: nil, archive_id: nil).order(:id).each do |email|
+          next unless email.issue.blank?
+
           domain_name, project_id = email.from.split('@').last,  ''
           author = User.where(type: "User", mail: email.from)[0]
 
@@ -44,7 +46,7 @@ namespace :redmine do
 
             if issue.save
               email.attachments.each do |attachment|
-                issue.attachments.create!({
+                i = issue.attachments.create!({
                   filename: attachment.filename,
                   disk_directory: attachment.disk_directory,
                   disk_filename: attachment.disk_filename,
@@ -52,35 +54,40 @@ namespace :redmine do
                   digest: attachment.digest,
                   content_type: attachment.content_type,
                   filesize: attachment.filesize
-                })
+                });
               end if email.attachments.any?
 
-              # Mail.deliver do
-              #   protocol = Setting.find_by_name(:protocol).try(:value)
-              #   hostname = Setting.find_by_name(:host_name).try(:value)
-              #   conformity_bcc = settings["confirmation_bcc"]
+              begin
+                Mail.deliver do
+                  protocol = Setting.find_by_name(:protocol).try(:value)
+                  hostname = Setting.find_by_name(:host_name).try(:value)
+                  conformity_bcc = settings["confirmation_bcc"]
 
-              #   from          ActionMailer::Base.smtp_settings[:user_name]
-              #   to            email.from
-              #   in_reply_to   email.message_id
-              #   subject       "Re: " + email.subject
-              #   body          "Здравствуйте!\n" + 
-              #                 "Ваш запрос зарегистрирован в системе учета задач под номером #{issue.id}.\n\n" +
-              #                 "#{protocol ? protocol : 'http'}://#{hostname ? hostname : 'localhost:3000'}/issues/#{issue.id}"
+                  from          ActionMailer::Base.smtp_settings[:user_name]
+                  to            email.from
+                  in_reply_to   email.message_id
+                  subject       "Re: " + email.subject
+                  body          "Здравствуйте!\n" + 
+                                "Ваш запрос зарегистрирован в системе учета задач под номером #{issue.id}.\n\n" +
+                                "#{protocol ? protocol : 'http'}://#{hostname ? hostname : 'localhost:3000'}/issues/#{issue.id}"
 
-              #   unless conformity_bcc.blank?
-              #     bcc conformity_bcc.split(",").map { |address| address.strip }
-              #   end
-                              
-              # end          
+                  unless conformity_bcc.blank?
+                    bcc conformity_bcc.split(",").map { |address| address.strip }
+                  end         
+                end
+              rescue => error
+                puts "Unable to send message because '#{error.message}'"
+              end
               
-              email.update_attributes :issue_created => true, :issue_id => issue.id
+              email.update_attribute :issue_id, issue.id
             end
           end
         end
 
 
-        Email.where(issue_created: false, archive_id: nil).where('parent_message_id IS NOT NULL').order(:id).each do |email|
+        Email.where(archive_id: nil).where('parent_message_id IS NOT NULL').order(:id).each do |email|
+          next unless email.issue.blank?
+
           parent_email = get_parent_email email.parent_message_id
           author = User.where(type: "User", mail: email.from)[0]
 
@@ -109,7 +116,7 @@ namespace :redmine do
               end if email.attachments.any?
 
               if issue.save
-                email.update_attributes :issue_created => true, :issue_id => issue.id
+                email.update_attributes :issue_id, issue.id
               end
             end
           end

@@ -3,12 +3,23 @@ class Email < ActiveRecord::Base
   belongs_to :archive
   has_many :attachments, as: :container
 
-  acts_as_attachable
+  # acts_as_attachable
+
+  before_destroy :attachment_destroy
 
   def project
-    self.issue ? self.issue.project : nil 
+    issue ? issue.project : nil 
   end
-end
 
-# TODO:
-# - error 403 while trying download attachment
+  def attachments_visible?(user)
+    user.admin?
+  end
+
+  private
+
+    def attachment_destroy
+      self.attachments.each do |attachment|
+        attachment.destroy if Attachment.where(:digits => attachment.digits).size == 1
+      end
+    end
+end
